@@ -43,13 +43,13 @@ text_spacing_char = ' '
 def decode(morse):
     output = ''
     sentences = morse.split(sentence_break)
-    print 'Sentences: ', sentences
+
     for sentence in sentences:
         words = sentence.strip().split(word_break)
-        print 'Words: ', words
+
         for word in words:
             characters = word.strip().split(letter_break)
-            print 'Characters: ', characters
+
             for character in characters:
                 if morse_code_dict.has_key(character.strip()):
                     output += morse_code_dict[character.strip()]
@@ -65,7 +65,7 @@ def encode(message):
             output += morse_char_dict[character.upper()]
             output += letter_break
         else:
-            output += word_break
+            output += word_break     # place word break anywhere an unencodeable character exists
     return output.strip()
 
 def test_string_to_Morse():
@@ -94,8 +94,8 @@ if __name__ == '__main__':
         sample = ''
     decoded = decode(sample)
     encoded = encode(sample)
-    status = 1
-    if status:
+    if decoded != '':
         print decoded
+    if encoded != '':
         print encoded
-    sys.exit(status)
+    sys.exit(1)
