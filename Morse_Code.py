@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os
+import sys
 import string
 
 morse_char_dict = {
@@ -23,23 +23,39 @@ morse_char_dict = {
 # create an inverse dictionary
 morse_code_dict = {v: k for k, v in morse_char_dict.items()}
 
-sentence_break = '       '  #seven spaces
-word_break = '   '   #three spaces
-letter_break = '  '   #two spaces
+# constants
+audio_timing = 60    # milliseconds for a "dot" at 20 words per minute
+audio_tone_freq = 750     # standard range is 600-1000 hz
+space_tone_freq = 0    # silence
+
+dot_length = 1
+dash_length = 3
+inter_tone_spacing = 1
+word_spacing = 7
+letter_spacing = 3
+
+sentence_break = '         '    # not in the formal definition
+word_break = '       '
+letter_break = '   '
+text_spacing_char = ' '
+
 
 def decode(morse):
     output = ''
     sentences = morse.split(sentence_break)
+    print 'Sentences: ', sentences
     for sentence in sentences:
-        words = sentence.split(word_break)
+        words = sentence.strip().split(word_break)
+        print 'Words: ', words
         for word in words:
-            characters = word.split(letter_break)
+            characters = word.strip().split(letter_break)
+            print 'Characters: ', characters
             for character in characters:
-                if morse_code_dict.has_key(character):
-                    output += morse_code_dict[character]
+                if morse_code_dict.has_key(character.strip()):
+                    output += morse_code_dict[character.strip()]
             output += ' '
         #output += '. '
-    return output
+    return output.strip()
 
 
 def encode(message):
@@ -48,23 +64,38 @@ def encode(message):
         if morse_char_dict.has_key(character.upper()):
             output += morse_char_dict[character.upper()]
             output += letter_break
-    return output
+        else:
+            output += word_break
+    return output.strip()
 
 def test_string_to_Morse():
     test_list = [
-                ("Sofia ", "...  ---  ..-.  ..  .-"),
-                ("SOPHIA ", "...  ---  .--.  ....  ..  .-"),
-                ("EUGENIA ", ".  ..-  --.  .  -.  ..  .-")]
+                ("Sofia", "...   ---   ..-.   ..   .-"),
+                ("We the people", ".--   .          -   ....   .          .--.   .   ---   .--.   .-..   ."),
+                ("SOPHIA", "...   ---   .--.   ....   ..   .-"),
+                ("EUGENIA", ".   ..-   --.   .   -.   ..   .-")]
     for text, code in test_list:
+        
         print 'encode: ', text
-        print encode(text)
+        encoded = encode(text)
+        print encoded
+        assert encoded == code
+
         print 'decode: ', code
-        print decode(code)
-        assert decode(code) == text.upper()
+        decoded = decode(code)
+        print decoded
+        assert decoded == text.upper()
 
 
 if __name__ == '__main__':
-    status = decode(sys[0], result)
+    try:
+        sample = sys.argv[1]
+    except:
+        sample = ''
+    decoded = decode(sample)
+    encoded = encode(sample)
+    status = 1
     if status:
-        print result
+        print decoded
+        print encoded
     sys.exit(status)
