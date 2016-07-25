@@ -3,6 +3,8 @@
 import sys
 import string
 
+morse_code_alphabet = list('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.,?/@')
+
 morse_char_dict = {
         'A': '.-',     'B': '-...',   'C': '-.-.', 
         'D': '-..',    'E': '.',      'F': '..-.',
@@ -17,7 +19,10 @@ morse_char_dict = {
         '0': '-----',  '1': '.----',  '2': '..---',
         '3': '...--',  '4': '....-',  '5': '.....',
         '6': '-....',  '7': '--...',  '8': '---..',
-        '9': '----.' 
+        '9': '----.', 
+        
+        '.': '.-.-.-', ',': '--..--', '?': '..--..',
+        '/': '-..-.', '@': '.--.-.',
         }
 
 # create an inverse dictionary
@@ -32,12 +37,13 @@ dot_length = 1
 dash_length = 3
 inter_tone_spacing = 1
 word_spacing = 7
-letter_spacing = 3
+letter_spacing = 4
 
-sentence_break = '         '    # not in the formal definition
-word_break = '       '
-letter_break = '   '
-text_spacing_char = ' '
+space = ' '
+sentence_break = space * 10    # not in the formal definition
+word_break = space * 7
+letter_break = space * 3
+text_spacing_char = space * 2
 
 
 def decode(morse):
@@ -61,6 +67,8 @@ def decode(morse):
 def encode(message):
     output = ''
     for character in message:
+        #print character
+        #print morse_char_dict[character.upper()]
         if morse_char_dict.has_key(character.upper()):
             output += morse_char_dict[character.upper()]
             output += letter_break
@@ -79,12 +87,22 @@ def test_string_to_Morse():
         print 'encode: ', text
         encoded = encode(text)
         print encoded
-        assert encoded == code
+        print len(code), len(encoded)
+        assert code == encoded
 
         print 'decode: ', code
         decoded = decode(code)
         print decoded
         assert decoded == text.upper()
+
+from hypothesis import given, settings
+from hypothesis.strategies import text
+
+@given(text(alphabet=morse_code_alphabet))
+@settings(max_examples=5000)
+def test_encode_eq_decode(st):
+    if st == ' ': return
+    assert st == decode(encode(st))
 
 
 if __name__ == '__main__':
