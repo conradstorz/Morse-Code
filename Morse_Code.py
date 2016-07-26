@@ -22,7 +22,7 @@ morse_char_dict = {
         '9': '----.', 
         
         '.': '.-.-.-', ',': '--..--', '?': '..--..',
-        '/': '-..-.', '@': '.--.-.',
+        '/': '-..-.', '@': '.--.-.',  ' ': '    ',
         }
 
 # create an inverse dictionary
@@ -37,17 +37,52 @@ dot_length = 1
 dash_length = 3
 inter_tone_spacing = 1
 word_spacing = 7
-letter_spacing = 4
+letter_spacing = 3
 
 space = ' '
 sentence_break = space * 10    # not in the formal definition
-word_break = space * 7
-letter_break = space * 3
-text_spacing_char = space * 2
+word_break = space * word_spacing
+letter_break = space * letter_spacing
+text_spacing_char = space * 1
+
+
+def decode_str_representation(morse):
+    output = ''
+
+
+def extract_code(stream):
+    output = ''
+    last = ' '
+    complete = False
+    s = list(stream)
+
+    for char in s:
+        if char == ' ' and last != ' ':
+            return output
+        else:
+            last = char
+            output += char
+
+    return output
+
+            
+def clean_whitespace(code):
+    output = ''
+    s = list(code)
+    for char in s:
+        if char == ' ':
+            output += char
+        else:
+            break
+    if output == '':
+        output = code
+    return output
 
 
 def decode(morse):
     output = ''
+
+    """
     sentences = morse.split(sentence_break)
 
     for sentence in sentences:
@@ -59,9 +94,23 @@ def decode(morse):
             for character in characters:
                 if morse_code_dict.has_key(character.strip()):
                     output += morse_code_dict[character.strip()]
+            
             output += ' '
-        #output += '. '
-    return output.strip()
+
+    return output[:-1]   # strip just the last space character
+    """
+
+    while len(morse) > 0:
+        code = extract_code(morse)
+        code = clean_whitespace(code)
+        if morse_code_dict.has_key(code):
+            output += morse_code_dict[code]
+        else:
+            if len(code) > 9: #this is one or more spaces
+                output += ' '
+        morse = morse[len(code):]
+
+    return output
 
 
 def encode(message):
@@ -75,6 +124,7 @@ def encode(message):
         else:
             output += word_break     # place word break anywhere an unencodeable character exists
     return output.strip()
+
 
 def test_string_to_Morse():
     test_list = [
@@ -94,6 +144,7 @@ def test_string_to_Morse():
         decoded = decode(code)
         print decoded
         assert decoded == text.upper()
+
 
 from hypothesis import given, settings
 from hypothesis.strategies import text
