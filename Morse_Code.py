@@ -3,7 +3,7 @@
 import sys
 import string
 
-morse_code_alphabet = list('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.,?/@')
+morse_code_alphabet = list('0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZ.,?/@')
 
 morse_char_dict = {
         'A': '.-',     'B': '-...',   'C': '-.-.', 
@@ -81,23 +81,25 @@ def clean_whitespace(code):
 
 def decode(morse):
     output = ''
+    if morse == '':
+        return output
 
-    """
     sentences = morse.split(sentence_break)
 
     for sentence in sentences:
-        words = sentence.strip().split(word_break)
+        words = sentence.split(word_break)
 
         for word in words:
-            characters = word.strip().split(letter_break)
-
+            characters = word.split(letter_break)
+            print characters
             for character in characters:
                 if morse_code_dict.has_key(character.strip()):
                     output += morse_code_dict[character.strip()]
-            
+                if character == '':
+                    output += ' '
             output += ' '
 
-    return output[:-1]   # strip just the last space character
+    return output[:-2]   # strip just the last 2 space characters
     """
 
     while len(morse) > 0:
@@ -106,12 +108,14 @@ def decode(morse):
         if morse_code_dict.has_key(code):
             output += morse_code_dict[code]
         else:
-            if len(code) > 9: #this is one or more spaces
+            while len(code) >= 6: #this is one or more spaces
                 output += ' '
+                code = code[6:] #4 is the length of a space and 3 is the space between characters
+
         morse = morse[len(code):]
 
     return output
-
+    """
 
 def encode(message):
     output = ''
@@ -123,15 +127,15 @@ def encode(message):
             output += letter_break
         else:
             output += word_break     # place word break anywhere an unencodeable character exists
-    return output.strip()
+    return output
 
 
 def test_string_to_Morse():
     test_list = [
-                ("Sofia", "...   ---   ..-.   ..   .-"),
-                ("We the people", ".--   .          -   ....   .          .--.   .   ---   .--.   .-..   ."),
-                ("SOPHIA", "...   ---   .--.   ....   ..   .-"),
-                ("EUGENIA", ".   ..-   --.   .   -.   ..   .-")]
+                ("Sofia", "...   ---   ..-.   ..   .-   "),
+                ("We the people", ".--   .          -   ....   .          .--.   .   ---   .--.   .-..   .   "),
+                ("SOPHIA", "...   ---   .--.   ....   ..   .-   "),
+                ("EUGENIA", ".   ..-   --.   .   -.   ..   .-   ")]
     for text, code in test_list:
         
         print 'encode: ', text
