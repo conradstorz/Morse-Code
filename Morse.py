@@ -17,5 +17,6 @@ if __name__ == '__main__':
         print 'Original string decodes to: "{}"'.format(decoded)
     if encoded != '':
         print 'Original string encodes to: "{}"'.format(encoded)
+        print 'and decodes to: "{}"'.format(Morse_Code.decode(encoded))
     print 'Original string: "{}"'.format(sample)
     sys.exit(0)

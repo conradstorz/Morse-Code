@@ -29,93 +29,103 @@ morse_char_dict = {
 morse_code_dict = {v: k for k, v in morse_char_dict.items()}
 
 # constants
-audio_timing = 60    # milliseconds for a "dot" at 20 words per minute
-audio_tone_freq = 750     # standard range is 600-1000 hz
+audio_encode_timing = 60    # milliseconds for a "dot" at 20 words per minute
+audio_encode_tone_freq = 750     # standard range is 600-1000 hz
 space_tone_freq = 0    # silence
 
 dot_length = 1
 dash_length = 3
 inter_tone_spacing = 1
+
+sentence_spacing = 10
 word_spacing = 7
 letter_spacing = 3
 
 space = ' '
-sentence_break = space * 10    # not in the formal definition
+sentence_break = space * sentence_spacing    # not in the formal definition
 word_break = space * word_spacing
 letter_break = space * letter_spacing
 text_spacing_char = space * 1
 
 
-def decode_str_representation(morse):
+def capture_next_transistion(morse):
+    """ pull characters from beginning of string until phase change.
+        for example: from silence to sound, or sound to silence. """
     output = ''
+    Silence = False
+    Code = True
+    morse_list = list(morse)
+
+    mode = Silence
+    while len(morse_list) > 0:
+        char = morse_list.pop(0)
+
+        if char == ' ':
+            transmission = Silence
+        else:
+            transmission = Code
+
+        if output == '':
+            output += char
+            mode = transmission
+        else:
+            if mode == transmission:
+                output += char
+            else:
+                return output
+    return output
+
+
+def there_are_only_spaces(string):
+    sl = list(string)
+    while len(sl) > 0:
+        char = sl.pop(0)
+        if char != ' ':
+            return False
+    return True
+
+
+def equivalent_number_of_space_characters(string):
+    output = ''
+    chars = ''
+    sl = list(string)
+    while len(sl) > 0:
+        output += sl.pop(0)
+        if len(output) == word_spacing:
+            chars += ' '
+            output = ''
+    return chars
 
 
 def extract_code(stream):
-    output = ''
-    last = ' '
-    complete = False
-    s = list(stream)
+    """ look at stream for identifiable structure. """
 
-    for char in s:
-        if char == ' ' and last != ' ':
-            return output
+    output = capture_next_transistion(stream)
+
+    code = ''
+    if morse_code_dict.has_key(output):
+        code += morse_code_dict[output]
+    else:
+        if there_are_only_spaces(output):
+            return equivalent_number_of_space_characters(output)
         else:
-            last = char
-            output += char
-
-    return output
+            return ''
+    return code
 
             
-def clean_whitespace(code):
-    output = ''
-    s = list(code)
-    for char in s:
-        if char == ' ':
-            output += char
-        else:
-            break
-    if output == '':
-        output = code
-    return output
-
-
 def decode(morse):
     output = ''
     if morse == '':
         return output
 
-    sentences = morse.split(sentence_break)
-
-    for sentence in sentences:
-        words = sentence.split(word_break)
-
-        for word in words:
-            characters = word.split(letter_break)
-            print characters
-            for character in characters:
-                if morse_code_dict.has_key(character.strip()):
-                    output += morse_code_dict[character.strip()]
-                if character == '':
-                    output += ' '
-            output += ' '
-
-    return output[:-2]   # strip just the last 2 space characters
-    """
-
     while len(morse) > 0:
-        code = extract_code(morse)
-        code = clean_whitespace(code)
-        if morse_code_dict.has_key(code):
-            output += morse_code_dict[code]
-        else:
-            while len(code) >= 6: #this is one or more spaces
-                output += ' '
-                code = code[6:] #4 is the length of a space and 3 is the space between characters
-
-        morse = morse[len(code):]
+        segment = capture_next_transistion(morse)
+        morse = morse[len(segment):]
+        content = extract_code(segment)
+        output += content
 
     return output
-    """
+
 
 def encode(message):
     output = ''
