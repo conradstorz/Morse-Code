@@ -1,3 +1,5 @@
+""" Application code for module Morse_Code.py """
+
 import sys
 from Morse_Code import decode, encode
 
@@ -6,7 +8,7 @@ if __name__ == '__main__':
     try:
         # look for string on command line
         SAMPLE = sys.argv[1]
-    except:
+    except NameError:
         # if no command, print usage instructions
         print 'Morse.py: USAGE; Morse.py "string to be encoded/decoded"'
         sys.exit(1)

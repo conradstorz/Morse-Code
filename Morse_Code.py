@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-
-import sys
-import string
+""" Functions for encoding/decoding strings to/from Morse Code representation. """
 
 MORSE_CODE_ALPHABET = list(
     """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.,?/@ :'-("="""
@@ -24,9 +22,9 @@ MORSE_CHAR_DICT = {
 MORSE_CODE_DICT = {v: k for k, v in MORSE_CHAR_DICT.items()}
 
 # constants
-AUDIO_ENCODE_TIMING = 60    # milliseconds for a "dot" at 20 words per minute
+AUDIO_ENCODE_TIMING = 60         # milliseconds for a "dot" at 20 words per minute
 AUDIO_ENCODE_TONE_FREQ = 750     # standard range is 600-1000 hz
-SPACE_TONE_FREQ = 0    # silence
+SPACE_TONE_FREQ = 0              # silence
 
 DOT_LENGTH = 1
 DASH_LENGTH = 3
@@ -71,23 +69,23 @@ def capture_next_transistion(morse):
     return output
 
 
-def there_are_only_SPACEs(string):
+def there_are_only_spaces(string):
     """ Check string for any character that is not a space. """
-    sl = list(string)
-    while len(sl) > 0:
-        char = sl.pop(0)
+    slist = list(string)
+    while len(slist) > 0:
+        char = slist.pop(0)
         if char != ' ':
             return False
     return True
 
 
-def equivalent_number_of_SPACE_characters(string):
+def equivalent_number_of_space_characters(string):
     """ Given string of spaces return one space character for each seven spaces. """
     output = ''
     chars = ''
-    sl = list(string)
-    while len(sl) > 0:
-        output += sl.pop(0)
+    slist = list(string)
+    while len(slist) > 0:
+        output += slist.pop(0)
         if len(output) == WORD_SPACING:
             chars += ' '
             output = ''
@@ -103,8 +101,8 @@ def extract_code(stream):
     if MORSE_CODE_DICT.has_key(output):
         code += MORSE_CODE_DICT[output]
     else:
-        if there_are_only_SPACEs(output):
-            return equivalent_number_of_SPACE_characters(output)
+        if there_are_only_spaces(output):
+            return equivalent_number_of_space_characters(output)
         else:
             return ''
     return code

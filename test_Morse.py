@@ -1,6 +1,8 @@
+""" Test code """
+
 from Morse_Code import encode, decode, MORSE_CODE_ALPHABET
 
-def test_string_to_Morse():
+def test_string_to_morse():
     """ test some known examples. """
     test_list = [
         ("Sofia", "...   ---   ..-.   ..   .-   "),
@@ -28,7 +30,7 @@ from hypothesis.strategies import text
 
 @given(text(alphabet=MORSE_CODE_ALPHABET))
 @settings(max_examples=5000)
-def test_encode_eq_decode(st):
+def test_encode_eq_decode(string):
     """ Take a string from Hypothesis and encode/decode it. """
-    assert st == decode(encode(st))
+    assert string == decode(encode(string))
 
