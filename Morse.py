@@ -1,22 +1,22 @@
 import sys
-import Morse_Code
+from Morse_Code import decode, encode
 
 if __name__ == '__main__':
 
     try:
         # look for string on command line
-        sample = sys.argv[1]
+        SAMPLE = sys.argv[1]
     except:
         # if no command, print usage instructions
         print 'Morse.py: USAGE; Morse.py "string to be encoded/decoded"'
         sys.exit(1)
 
-    decoded = Morse_Code.decode(sample)
-    encoded = Morse_Code.encode(sample)
-    if decoded != '':
-        print 'Original string decodes to: "{}"'.format(decoded)
-    if encoded != '':
-        print 'Original string encodes to: "{}"'.format(encoded)
-        print 'and decodes to: "{}"'.format(Morse_Code.decode(encoded))
-    print 'Original string: "{}"'.format(sample)
+    DECODED = decode(SAMPLE)
+    ENCODED = encode(SAMPLE)
+    if DECODED != '':
+        print 'Original string decodes to: "{}"'.format(DECODED)
+    if ENCODED != '':
+        print 'Original string encodes to: "{}"'.format(ENCODED)
+        print 'and decodes to: "{}"'.format(decode(ENCODED))
+    print 'Original string: "{}"'.format(SAMPLE)
     sys.exit(0)
