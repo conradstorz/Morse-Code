@@ -1,28 +1,30 @@
 #!/usr/bin/env python
-""" Functions for encoding/decoding strings to/from Morse Code representation. """
+""" Functions for encoding/decoding strings to/from Morse Code representation.
+    """
 
 MORSE_CODE_ALPHABET = list(
     """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.,?/@ :'-("="""
     )
 
 MORSE_CHAR_DICT = {
-        'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
-        'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-',
-        'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.',
-        'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-',
-        'W': '.--', 'X': '-..-', 'Y': '-.--', 'Z': '--..', '0': '-----',
-        '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....',
-        '6': '-....', '7': '--...', '8': '---..', '9': '----.', '.': '.-.-.-',
-        ',': '--..--', '?': '..--..', '/': '-..-.', '@': '.--.-.', ' ': '    ',
-        ':': '---...', "'": '.----.', '-': '-....-', '(': '-.--.-',
-        '"': '.-..-.', '=': '-...-',
-        }
+    'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
+    'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-',
+    'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.',
+    'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-',
+    'W': '.--', 'X': '-..-', 'Y': '-.--', 'Z': '--..', '0': '-----',
+    '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....',
+    '6': '-....', '7': '--...', '8': '---..', '9': '----.', '.': '.-.-.-',
+    ',': '--..--', '?': '..--..', '/': '-..-.', '@': '.--.-.', ' ': '    ',
+    ':': '---...', "'": '.----.', '-': '-....-', '(': '-.--.-',
+    '"': '.-..-.', '=': '-...-',
+    }
 
 # create an inverse dictionary
 MORSE_CODE_DICT = {v: k for k, v in MORSE_CHAR_DICT.items()}
 
 # constants
-AUDIO_ENCODE_TIMING = 60         # milliseconds for a "dot" at 20 words per minute
+AUDIO_ENCODE_TIMING = 60         # milliseconds for a "dot"
+                                 # at 20 words per minute.
 AUDIO_ENCODE_TONE_FREQ = 750     # standard range is 600-1000 hz
 SPACE_TONE_FREQ = 0              # silence
 
@@ -42,18 +44,20 @@ TEXT_SPACING_CHAR = SPACE * 1
 
 
 def split_string_on_edges(morse):
-    """ return a list of substrings that represent all the elements of the presented string.
-        Morse code is represented as a pattern of sounds seperated by measured silences.
-        A string representation of Morse is composed of silence represented by the use of
-        a space character {' '} and sounds represented by dots and dashes {'.' and '-'}. 
-        This function will break a string on whitespace and place each group of silences
+    """ return a list of substrings that represent all the elements of
+        the presented string. Morse code is represented as a pattern of
+        sounds seperated by measured silences. A string representation
+        of Morse is composed of silence represented by the use of
+        a space character {' '} and sounds represented by
+        dots and dashes {'.' and '-'}. This function will break a string
+        on whitespace and place each group of silences
         and sounds into seperate stings in a list.
         """
 
 
-#@given() # allow Hypothesis to send any input to the test function to measure results
+#@given() # allow Hypothesis to send any input
 def test_split_string_on_edges_operation(test_input):
-    """ SSOE should return a list of strings. 
+    """ SSOE should return a list of strings.
         SSOE returned list should contain ALL parts of the orginal string.
         Returned list should be alternating strings of whitespace and text.
         Any input to SSOE that is not a string should return an empty list.
@@ -99,7 +103,9 @@ def there_are_only_spaces(string):
 
 
 def equivalent_number_of_space_characters(string):
-    """ Given string of spaces return one space character for each seven spaces. """
+    """ Given string of spaces return one space character
+        for each seven spaces.
+        """
     output = ''
     chars = ''
     slist = list(string)
@@ -117,7 +123,7 @@ def extract_code(stream):
     output = capture_next_transistion(stream)
 
     code = ''
-    if MORSE_CODE_DICT.has_key(output):
+    if output in MORSE_CODE_DICT:
         code += MORSE_CODE_DICT[output]
     else:
         if there_are_only_spaces(output):
@@ -143,11 +149,10 @@ def encode(message):
     """ Convert a string of text into a string of dots and dashes. """
     output = ''
     for character in message:
-        if MORSE_CHAR_DICT.has_key(character.upper()):
+        if character.upper() in MORSE_CHAR_DICT:
             output += MORSE_CHAR_DICT[character.upper()]
             output += LETTER_BREAK
         else:
             # place word break anywhere an unencodeable character exists
             output += WORD_BREAK
     return output
-
