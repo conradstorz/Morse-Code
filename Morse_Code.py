@@ -41,6 +41,25 @@ LETTER_BREAK = SPACE * LETTER_SPACING
 TEXT_SPACING_CHAR = SPACE * 1
 
 
+def split_string_on_edges(morse):
+    """ return a list of substrings that represent all the elements of the presented string.
+        Morse code is represented as a pattern of sounds seperated by measured silences.
+        A string representation of Morse is composed of silence represented by the use of
+        a space character {' '} and sounds represented by dots and dashes {'.' and '-'}. 
+        This function will break a string on whitespace and place each group of silences
+        and sounds into seperate stings in a list.
+        """
+
+
+#@given() # allow Hypothesis to send any input to the test function to measure results
+def test_split_string_on_edges_operation(test_input):
+    """ SSOE should return a list of strings. 
+        SSOE returned list should contain ALL parts of the orginal string.
+        Returned list should be alternating strings of whitespace and text.
+        Any input to SSOE that is not a string should return an empty list.
+        """
+
+
 def capture_next_transistion(morse):
     """ pull characters from beginning of string until phase change.
         for example: from silence to sound, or sound to silence. """

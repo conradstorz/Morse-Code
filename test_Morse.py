@@ -1,6 +1,17 @@
 """ Test code """
 
-from Morse_Code import encode, decode, MORSE_CODE_ALPHABET
+from Morse_Code import encode, decode, MORSE_CODE_ALPHABET, MORSE_CHAR_DICT
+
+
+def test_given_alphabet_has_code_for_each_character():
+    """ Verify that all valid characters have a code assigned to them and that all codes are unique.
+        """
+    codes = set()
+    for char in MORSE_CODE_ALPHABET:
+        assert MORSE_CHAR_DICT.has_key(char)
+        codes.add(MORSE_CHAR_DICT[char])
+    assert len(codes) == len(MORSE_CODE_ALPHABET)
+
 
 def test_string_to_morse():
     """ test some known examples. """
@@ -8,7 +19,7 @@ def test_string_to_morse():
         ("Sofia", "...   ---   ..-.   ..   .-   "),
         ("We the people", ".--   .          -   ....   .          .--.   .   ---   .--.   .-..   .   "),
         ("SOPHIA", "...   ---   .--.   ....   ..   .-   "),
-        ("EUGENIA", ".   ..-   --.   .   -.   ..   .-   ")
+        ("EUGENIA", ".   ..-   --.   .   -.   ..   .-   "),
         ]
 
     for text, code in test_list:
